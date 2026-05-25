@@ -23,12 +23,12 @@ class Model:
 
         for t in allTratte:
             #Controlliamo se l'aeroporto è nei miei filtri
-            if t.aeroprtoP in self._graph and t.aeroprtoA in self._graph:
-                if self._graph.has_edge(t.aeroprtoP, t.aeroprtoA):
-                    self._graph[t.aeroprtoP][t.aeroprtoA]["weight"] += t.peso
+            if t.aeroportoP in self._graph and t.aeroportoA in self._graph:
+                if self._graph.has_edge(t.aeroportoP, t.aeroportoA):
+                    self._graph[t.aeroportoP][t.aeroportoA]["weight"] += t.peso
                 else:
                     #allora posso aggiungerlo
-                    self._graph.add_edge(t.aeroprtoP,t.aeroprtoA,weight= t.peso)
+                    self._graph.add_edge(t.aeroportoP,t.aeroportoA,weight= t.peso)
 
     def getGraphDetails(self):
         return len(self._graph.nodes), len(self._graph.edges)

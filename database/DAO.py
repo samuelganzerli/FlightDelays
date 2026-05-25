@@ -45,7 +45,7 @@ class DAO():
               #             ))
             result.append(Tratta(idMapA[row["ORIGIN_AIRPORT_ID"]],
                                 idMapA[row["DESTINATION_AIRPORT_ID"]],
-                                row["pesp"]))
+                                row["peso"]))
         cursor.close()
         conn.close()
         return result
