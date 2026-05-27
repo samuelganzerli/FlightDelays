@@ -6,7 +6,8 @@ class View(ft.UserControl):
         super().__init__()
         # page stuff
         self._page = page
-        self._page.title = "Template application using MVC and DAO"
+        self._page.title = "Tdp Flights manager 2026"
+        self._page.window_width = 1000
         self._page.horizontal_alignment = 'CENTER'
         self._page.theme_mode = ft.ThemeMode.DARK
         # controller (it is not initialized. Must be initialized in the main, after the controller is created)
@@ -30,30 +31,36 @@ class View(ft.UserControl):
         row1 = ft.Row([
             ft.Container(None, width=250),
             ft.Container(self._txtInCMin, width=250),
-            ft.Container(self._btnAnalizzaAeroporti, width=250)
+            ft.Container(self._btnAnalizzaAeroporti, width=250),
+            ft.Container(None, width=250),
         ], alignment=ft.MainAxisAlignment.CENTER)
 
         #ROW 2
-        self.ddAeroportoP = ft.Dropdown(label="Aeroporto di Partenza")
+        self._ddAeroportoP = ft.Dropdown(label="Aeroporto di Partenza")
         self._btnAeroportiConnessi= ft.ElevatedButton(text="Aeroporti Connessi",
                                                       on_click=self._controller.handleConnessi)
+        self._ddAeroportoA = ft.Dropdown(label="Aeroporto di Destinazione")
+        self._btnTestConnessione = ft.ElevatedButton(text="Test Connessione",
+                                                     on_click=self._controller.handleTestConnessione)
+
         row2 = ft.Row([
-            ft.Container(None, width=250),
-            ft.Container(self.ddAeroportoP, width=250),
-            ft.Container(self._btnAeroportiConnessi, width=250)
+            ft.Container(self._ddAeroportoP, width=150),
+            ft.Container(self._btnAeroportiConnessi, width=250),
+            ft.Container(self._ddAeroportoA, width=150),
+            ft.Container(self._btnTestConnessione, width=250)
+
         ], alignment=ft.MainAxisAlignment.CENTER)
 
         #ROW 3
-        self.ddAeroportoA = ft.Dropdown(label="Aeroporto di Destinazione")
         self._txtInTratteMax = ft.TextField(label="Num Tratte Max")
         self._btnCercaItinerario = ft.ElevatedButton(text="Cerca Itinerario",
                                                      on_click=self._controller.handleCerca)
 
-
         row3 = ft.Row([
-            ft.Container(self.ddAeroportoA, width=250),
+
+            ft.Container(None, width=250),
             ft.Container(self._txtInTratteMax, width=250),
-            ft.Container(self._btnCercaItinerario, width=250)
+            ft.Container(self._btnCercaItinerario, width=250),
         ], alignment=ft.MainAxisAlignment.CENTER)
 
         self._txtResults = ft.ListView(expand=1,
