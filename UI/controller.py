@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import flet as ft
 
 
@@ -7,13 +9,13 @@ class Controller:
         self._view = view
         # the model, which implements the logic of the program and holds the data
         self._model = model
-        self._choicheArrivo= None
-        self._choichePartenza = None
+        self._choiceArrivo= None
+        self._choicePartenza = None
 
     def handleAnalizza(self, e):
         cMinTxt = self._view._txtInCMin.value
         if cMinTxt =="":
-            self._view._txtInCMin.controls.clear()
+            self._view._txtResults.controls.clear()
             self._view._txtResults.controls.append(
                 ft.Text("inserire un valore numerico per il numero minimo di compagnie. ", color="red")
             )
@@ -55,12 +57,89 @@ class Controller:
         self._view.update_page()
 
     def handleTestConnessione(self,e):
-        pass
+
+        if self._choicePartenza is None:
+            self._view._txtResults.controls.clear()
+            self._view._txtResults.controls.append(ft.Text("Attenzione, per usare questo metodo occorre "
+                                                           "selezionare un aeroporto di partenza", color="red"))
+            self._view.update_page()
+            return
+
+        if self._choiceArrivo is None:
+            self._view._txtResults.controls.clear()
+            self._view._txtResults.controls.append(ft.Text("Attenzione, per usare questo metodo occorre "
+                                                           "selezionare un aeroporto di arrivo", color="red"))
+            self._view.update_page()
+            return
+
+        if not self._model.hasPath(self._choicePartenza, self._choiceArrivo):
+            self._view._txtResults.controls.clear()
+            self._view._txtResults.controls.append(ft.Text(f"non ho trovato un cammino tra i due aeroporti: "
+                                                           f"{self._choicePartenza} e {self._choiceArrivo}", color="orange"))
+            self._view.update_page()
+            return
+
+        path = self._model.getPath(self._choicePartenza, self._choiceArrivo)
+        self._view._txtResults.controls.clear()
+        self._view._txtResults.controls.append(ft.Text(f"ho trovato un cammino tra i due aeroporti: "
+                                                       f"{self._choicePartenza} e {self._choiceArrivo}. Di seguito i nodi del cammino",
+                                                       color="green"))
+        for p in path:
+            self._view._txtResults.controls.append(ft.Text(p))
+        self._view.update_page()
+
 
     def handleConnessi(self, e):
-        pass
+
+        if self._choicePartenza is None:
+            self._view._txtResults.controls.clear()
+            self._view._txtResults.controls.append(ft.Text("Attenzione, per usare questo metodo occorre "
+                                                           "selezionare un aeroporto di partenza"))
+            self._view.update_page()
+            return
+
+        viciniT = self._model.getViciniOrdinati(self._choicePartenza)
+        self._view._txtResults.controls.clear()
+        for v in viciniT:
+            self._view._txtResults.controls.append(ft.Text(f"{v[0]} - peso {v[1]}"))
+        self._view.update_page()
+
+
     def handleCerca(self, e):
-        pass
+
+        t = self._view._txtInTratteMax.value
+        try:
+            tInt = int(t)
+        except ValueError:
+            self._view._txtResults.controls.clear()
+            self._view._txtResults.controls.append(ft.Text("il valore di t deve essere un intero positivo", color="red"))
+            return
+
+        tic = datetime.now()
+
+
+
+        path, score = self._model.getCamminoOttimo(self._choicePartenza, self._choiceArrivo, tInt)
+        self._view._txtResults.controls.clear()
+
+        self._view._txtResults.controls.append(
+            ft.Text(f"cammino fra {self._choicePartenza} e {self._choiceArrivo} trovato", color = "green"))
+        self._view._txtResults.controls.append(
+            ft.Text(f"il cammino ha uno score complessivo di: {score} e contiene i seguenti nodi: ", color = "green"))
+
+        for p in path:
+            self._view._txtResults.controls.append(
+                ft.Text(p, color="green"))
+        self._view._txtResults.controls.append(
+            ft.Text(f"cammino trovato in {datetime.now()-tic}: ", color="green"))
+
+        self._view.update_page()
+        return
+
+
+
+
+
     def fillDropDown(self, allNodes):
         for n in allNodes:
             self._view._ddAeroportoP.options.append(
@@ -81,8 +160,8 @@ class Controller:
         print(f"Hai selezionato {self._choicePartenza} come aeroporto di partenza")
 
     def _choiceDdArrivo(self, e):
-        self._choicePartenza = e.control.data
-        print(f"Hai selezionato {self._choicheArrivo} come aeroporto di partenza")
+        self._choiceArrivo = e.control.data
+        print(f"Hai selezionato {self._choiceArrivo} come aeroporto di arrivo")
 
 
 
